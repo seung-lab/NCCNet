@@ -1,8 +1,8 @@
 # NCCNet
-Template  matching  by  normalized  cross  correlation (NCC) is widely used for finding image correspondences. We improve the robustness of this algorithm by preprocess-ing images with "siamese" convolutional networks trained to maximize the contrast between NCC values of true and false matches.
+Template  matching  by  normalized  cross  correlation (NCC) is widely used for finding image correspondences. We improve the robustness of this algorithm by preprocessing images with "siamese" convolutional networks trained to maximize the contrast between NCC values of true and false matches.
 
 ## Usage
-Start docker
+Start docker environment
 ```
 nvidia-docker run -it --net=host \
       -v PATH_TO_NCCNet_REPO:/NCCNet \
@@ -11,12 +11,12 @@ nvidia-docker run -it --net=host \
 cd /NCCNet
 ```
 
-To train the model defined in `hparams.json` run the following code. Parameters are self-explanatory.
+To train the model defined in `hparams.json` run the following code. Parameters in the json file are self-explanatory.
 
 ```
 python src/model.py
 ```
-Logs and trained models will appear in `logs/` folder. Please change name in `hparams.json` for each experiment to log with different name otherwise will throw an error.
+Logs and trained models will appear in `logs/` folder. Please change name in `hparams.json` for each experiment to log with different names, otherwise it will throw an error.
 
 
 ## Data
