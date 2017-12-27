@@ -63,17 +63,17 @@
 
     "preprocessing": {
         "tfrecord_train_dest": {"data":"data/tf/train_v5.tfrecords", "type": "str", "description": "Destination of training set"},
-        "tfrecord_test_dest": {"data":"data/tf/test_v5.tfrecords", "type": "str", "description": "Destination of testing set"},
-        "points_dir": {"data":"data/points/", "type": "str", "description": "Point directory with CSV files"},
-        "masks_dir": {"data":"data/masks/", "type": "str", "description": "Mask directory with npy files"},
-        "labels_dir": {"data":"data/labels/", "type": "str", "description": "Labels_directory"},
-        "images_dir": {"data":"data/images/", "type": "str", "description": "Image directory"},
-        "cloud_src": {"data":"gs://neuroglancer/pinky40_alignment/prealigned", "type": "str", "description": "Cloud directory"},
-        "cloud_mip": {"data":0, "type": "str", "description": "MIP level for neuroglancer"},
-        "test_set_ratio": {"data":0.1, "type": "str", "description": "ratio of test set vs training set"},
+
+        "cloud_src": {"data":"gs://neuroglancer/drosophila_v0/image_v14_single_slices/", "type": "str", "description": "Cloud directory"},
+        "cloud_mip": {"data": 2, "type": "str", "description": "MIP level for neuroglancer"},
         "threads": {"data":16, "type": "str", "description": "Number of threads for data collection"},
         "width": {"data":224, "type": "str", "description": "width of the image"},
-        "scale": {"data":16, "type": "str", "description": "scaling factor"}
+        "scale": {"data":1, "type": "str", "description": "scaling factor"},
+        "features": {
+            "data": {
+                "search_raw": {"in_width": 612, "width": 384},
+                "template_raw": {"in_width": 324, "width": 120}
+            }, "type": "dict", "description": "Structure of input features"}
     },
     "evaluation":{
         "batch_size": {"data": 8, "type": "int", "description": "Batch size during training"},

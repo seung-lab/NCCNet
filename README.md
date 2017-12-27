@@ -21,5 +21,3 @@ Logs and trained models will appear in `logs/` folder. Please change name in `hp
 
 ## Data
 For training the model you will require to have pairs of image-templates defined by TFRecords files in `/data/tf/bad_trainset_24000_612_324.tfrecords`. If you are part of seunglab you can find this file in `seungmount/research/davit/NCCNet/data/tf/bad_trainset_24000_612_324.tfrecords`
-
-Data collection is currently done using a script defined in `src/prepare_data.py`. Even though for now it works with h5 files, I plan to switch CloudVolume soon.

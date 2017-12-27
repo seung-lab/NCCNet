@@ -18,10 +18,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import src.helpers as helpers
-import src.loss as loss
-import hyperparams
-
 import argparse
 import os
 import sys
@@ -29,12 +25,30 @@ import sys
 import tensorflow as tf
 import numpy as np
 
-import hyperparams
-import src.data as d
-import src.model as models
+import cavelab as cl
 
 FLAGS = None
 
+#Load hyperparams
+hparams = cl.hparams(name="preprocessing")
+
+cloud = cl.Cloud(hparams.cloud_src, mip=hparams.cloud_mip, cache=False, bounded = False, fill_missing=True)
+shape = cloud.shape
+downsample = hparams.scale
+
+def get_sample(s_size):
+    x = np.floor(0.75*shape[0]*np.random.random(1)+shape[0]*0.1).astype(int)
+    y = np.floor(0.75*shape[1]*np.random.random(1)+shape[1]*0.1).astype(int)
+    z = np.floor(0.75*shape[2]*np.random.random(1)+shape[2]*0.1).astype(int)
+
+    scale_ratio = (1/float(downsample), 1/float(downsample))
+    image = cloud.vol[x:x+downsample*s_size, y:y+downsample*s_size, z:z+1]
+    template = cloud.vol[x:x+downsample*s_size, y:y+downsample*s_size, z+1:z+2]
+    image, template = image[:,:,:,0], template[:,:,:,0]
+
+    #image = cl.image_processing.resize(image[:,:,0], ratio=scale_ratio, order=1)
+    #template = cl.image_processing.resize(template[:,:,0], ratio=scale_ratio, order=1)
+    return image[:,:,0], template[:,:,0]
 
 def _int64_feature(value):
   return tf.train.Feature(int64_list=tf.train.Int64List(value=[value]))
@@ -43,47 +57,50 @@ def _int64_feature(value):
 def _bytes_feature(value):
   return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
 
-def convert_to(data, hparams, num_examples, name):
+def doncc(image, template):
+    ncc = cl.image_processing.cv_normxcorr(image, template)
+    pos = np.array(np.unravel_index(ncc.argmax(), ncc.shape))
+    tmp = np.array(ncc)
+    tmp[pos[0]-5:pos[0]+10, pos[1]-5:pos[1]+10] = 0
+    pos2 = np.array(np.unravel_index(tmp.argmax(), ncc.shape))
+    r1 = ncc[pos[0], pos[1]]
+    r2 = ncc[pos2[0], pos2[1]]
+    r = r1-r2
+    return r, pos, ncc
+
+def convert_to(hparams, num_examples):
   """Converts a dataset to tfrecords."""
 
-  s_rows = hparams.in_source_width
-  t_rows = hparams.in_template_width
+  s_rows = hparams.features['search_raw']['in_width']
+  t_rows = hparams.features['template_raw']['width']
 
-  filename = os.path.join(hparams.data_dir, name + '.tfrecords')
+  filename = hparams.tfrecord_train_dest #os.path.join(hparams.data_dir, name + '.tfrecords')
 
   print('Writing', filename)
   writer = tf.python_io.TFRecordWriter(filename)
-
-  sess = tf.Session()
-  g = models.Graph()
-
-  search = tf.placeholder(tf.float32, shape=[hparams.in_source_width,hparams.in_source_width])
-  template = tf.placeholder(tf.float32, shape=[hparams.in_template_width,hparams.in_template_width])
-
-  search_dim = tf.expand_dims(tf.expand_dims(search, dim=0), dim=3)
-  template_dim = tf.expand_dims(tf.expand_dims(template, dim=0), dim=3)
-
-  g.source_alpha = [search_dim]
-  g.template_alpha = [template_dim]
-  g.similar = tf.constant(1)
-
-  g = models.normxcorr(g, hparams)
-  g = loss.loss(g, hparams)
   index = 0
-  
+
   while(index < num_examples):
     #if index%20 == 0:
     #    print(str(100*index/float(num_examples))+"%")
     #Get images
-    t, s = data.getSample([t_rows, t_rows], [s_rows, s_rows], hparams.resize, data.metadata)
+    s, t = get_sample(s_rows)
 
-    result = sess.run(g.l, feed_dict={template: t, search: s})
+    start = int(t.shape[0]/2-t_rows/2)
+    end = start + t_rows
+
+    temp = t[start:end, start:end]
+    result, _, ncc = doncc(s, temp)
 
     print(result)
-    if(result> -0.14) or result<-0.90:
+    if(result < 0.2) and (result>0.01) :
+        cl.visual.save(s/255, 'dump/image')
+        cl.visual.save(t/255, 'dump/templtate')
+        cl.visual.save(temp/255, 'dump/small_template')
+        cl.visual.save(ncc, 'dump/ncc')
         print('done', index)
-        search_raw = np.asarray(s*255, dtype=np.uint8).tostring()
-        temp_raw = np.asarray(t*255, dtype=np.uint8).tostring()
+        search_raw = np.asarray(s, dtype=np.uint8).tostring()
+        temp_raw = np.asarray(t, dtype=np.uint8).tostring()
 
         ex = tf.train.Example(features=tf.train.Features(feature={
             'search_raw': _bytes_feature(search_raw),
@@ -96,12 +113,9 @@ def convert_to(data, hparams, num_examples, name):
 
 
 def main(unused_argv):
-  # Get the data.
-  hparams = hyperparams.create_hparams()
-  data = d.Data(hparams, prepare = True )
 
   # Convert to Examples and write the result to TFRecords.
-  convert_to(data, hparams, 10000, 'adasd')
+  convert_to(hparams, 10000)
   #convert_to(data, hparams, 1000, 'validation_1K')
   #convert_to(data, hparams, 1000, 'test_1K')
 
