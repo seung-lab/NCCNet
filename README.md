@@ -5,21 +5,21 @@ Template  matching  by  normalized  cross  correlation (NCC) is widely used for 
 Start docker
 ```
 nvidia-docker run -it --net=host \
-      -v PATH_TO_CRACK_FOLD_DETECTOR_REPO:/PredUnet \
+      -v PATH_TO_NCCNet_REPO:/NCCNet \
       davidbuniat/cavelab:latest-gpu bash
 
-cd /project
+cd /NCCNet
 ```
 
-To train the model defined in hparams.json run the following code
+To train the model defined in `hparams.json` run the following code. Parameters are self-explanatory.
 
 ```
 python src/model.py
 ```
-Logs and trained models will appear in `logs/` folder. Please change name in hparams.json on each experiment.
+Logs and trained models will appear in `logs/` folder. Please change name in `hparams.json` for each experiment to log with different name otherwise will throw an error.
 
 
 ## Data
-For training the model you will require to have pairs of image, templates defined by TFRecords files in `/data/bad_trainset_24000_612_324.tfrecords`.
+For training the model you will require to have pairs of image-templates defined by TFRecords files in `/data/tf/bad_trainset_24000_612_324.tfrecords`. If you are part of seunglab you can find this file in `seungmount/research/davit/NCCNet/data/tf/bad_trainset_24000_612_324.tfrecords`
 
-Data collection done using script defined in `src/prepare_data.py`. Even though for now it works with h5 files, will switch soon to CloudVolume.
+Data collection is currently done using a script defined in `src/prepare_data.py`. Even though for now it works with h5 files, I plan to switch CloudVolume soon.
