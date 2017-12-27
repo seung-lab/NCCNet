@@ -1,25 +1,25 @@
-# TODAY PLAN
+# NCCNet
+Template  matching  by  normalized  cross  correlation (NCC) is widely used for finding image correspondences. We improve the robustness of this algorithm by preprocess-ing images with "siamese" convolutional networks trained to maximize the contrast between NCC values of true and false matches.
 
-# Development
-# V Write Hparams
-# V Run a test
-# V Add weight sharing
-# V Train
-# - Write evaluation
-# - Add augmentation
-# - Move all variables to Hyperparams
+## Usage
+Start docker
+```
+nvidia-docker run -it --net=host \
+      -v PATH_TO_CRACK_FOLD_DETECTOR_REPO:/PredUnet \
+      davidbuniat/cavelab:latest-gpu bash
 
-# Experiments
-# - Multi-feature training
-# - Real world images
-# - NCCLayer at the end
+cd /project
+```
 
-# Pinky inference into Caffe
-# - write prototxt
-# - save weights
-# - Collect data from pinky
-# - Train on pinky
+To train the model defined in hparams.json run the following code
 
-# Publish
-# - Write a doc
-# - Commit to git
+```
+python src/model.py
+```
+Logs and trained models will appear in `logs/` folder. Please change name in hparams.json on each experiment.
+
+
+## Data
+For training the model you will require to have pairs of image, templates defined by TFRecords files in `/data/bad_trainset_24000_612_324.tfrecords`.
+
+Data collection done using script defined in `src/prepare_data.py`. Even though for now it works with h5 files, will switch soon to CloudVolume.
