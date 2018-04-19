@@ -34,12 +34,13 @@ hparams = cl.hparams(name="preprocessing")
 
 cloud = cl.Cloud(hparams.cloud_src, mip=hparams.cloud_mip, cache=False, bounded = False, fill_missing=True)
 shape = cloud.shape
+shape[2] = 800
 downsample = hparams.scale
 
 def get_sample(s_size):
     x = np.floor(0.75*shape[0]*np.random.random(1)+shape[0]*0.1).astype(int)
     y = np.floor(0.75*shape[1]*np.random.random(1)+shape[1]*0.1).astype(int)
-    z = np.floor(0.75*shape[2]*np.random.random(1)+shape[2]*0.1).astype(int)
+    z = np.floor(0.75*shape[2]*np.random.random(1)+shape[2]*0.1).astype(int)+1200
 
     scale_ratio = (1/float(downsample), 1/float(downsample))
     image = cloud.vol[x:x+downsample*s_size, y:y+downsample*s_size, z:z+1]
@@ -91,9 +92,8 @@ def convert_to(hparams, num_examples):
 
     temp = t[start:end, start:end]
     result, _, ncc = doncc(s, temp)
-
     print(result)
-    if(result < 0.2) and (result>0.01) :
+    if(result < 0.6) and (result>0.01) :
         cl.visual.save(s/255, 'dump/image')
         cl.visual.save(t/255, 'dump/templtate')
         cl.visual.save(temp/255, 'dump/small_template')

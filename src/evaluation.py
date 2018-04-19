@@ -8,17 +8,18 @@ import tensorflow as tf
 hparams = cl.hparams(name="evaluation")
 elastic_deform = cl.image_processing.elastic_transformations(500, 30)
 
+from pathos.multiprocessing import ProcessPool, ThreadPool
 
-source_width = 384
+source_width = 512
 BATCH_SIZE = 8
-size = 1250
+size = 100
 width = 120
 
-#MODEL_DIR = 'logs/NCCNetv1/'
-MODEL_DIR = 'logs/NCCNetv37_two/'
-#features = { "inputs":"input/image:0", "outputs": "Passes/image_transformed:0"}
-features = {"inputs": "image:0", "outputs": "add_96:0"}
-
+MODEL_DIR = 'logs/NCCNetv1/'
+#MODEL_DIR = 'logs/NCCNet_flyem/'
+features = { "inputs":"input/image:0", "outputs": "Passes/image_transformed:0"}
+#features = {"inputs": "image:0", "outputs": "add_96:0"}
+#features = { "inputs":"image:0", "outputs": "output/image:0"}
 
 model = cl.Graph(directory=MODEL_DIR)
 tf.get_default_graph().clear_collection("queue_runners")
@@ -39,10 +40,12 @@ def get_batch():
     loc = np.repeat((source_width-width)/2, BATCH_SIZE*2).reshape((BATCH_SIZE, 2))
     return image, template, loc
 
+
 def doncc(image, template):
 
     nccs = []
     locs = []
+
     for channel in range(image.shape[-1]):
         nccs.append(cl.image_processing.cv_normxcorr(image[:,:,channel],
                                                      template[:,:,channel]))
@@ -52,8 +55,6 @@ def doncc(image, template):
     ncc = np.sum(nccs, axis=0)/image.shape[-1]
     pos = np.array(np.unravel_index(ncc.argmax(), ncc.shape))
     return ncc, nccs, pos, locs
-
-
 
 def get_wrong_matches(imgs, tmps, locs):
     if len(imgs.shape)==3:
@@ -81,18 +82,17 @@ def process(imgs, tmps):
     tmps_new = tmps_new[:,:source_width, :source_width, :]
     return imgs_new, tmps_new
 
-
 def evaluate(model_to_use=False):
     err = np.zeros((size, 4))
     count = 0
     for i in range(size):
         # Load data
         imgs, tmps, locs = get_batch()
-
         err[i, 0] += get_wrong_matches(imgs, imgs, locs)
         err[i, 1] += get_wrong_matches(imgs, tmps, locs)
 
         imgs_t, tmps_t = process(imgs, tmps)
+
         err[i, 2] += get_wrong_matches(imgs_t, imgs_t, locs)
         err[i, 3] += get_wrong_matches(imgs_t, tmps_t, locs)
 

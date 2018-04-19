@@ -2,7 +2,7 @@ import tensorflow as tf
 import cavelab as cl
 import numpy as np
 
-def loss(p, similar, hparams, eps = 0.001, name='loss'):
+def loss(p, similar, radius=10, eps = 0.001, name='loss'):
 
     #Get maximum p and mask the point
     p_max = tf.reduce_max(p, axis=[1,2], keep_dims=True)
@@ -10,7 +10,7 @@ def loss(p, similar, hparams, eps = 0.001, name='loss'):
 
     #Design the shape of the mask
     p_shape = tf.shape(p)
-    mask = tf.ones([hparams.radius*2, hparams.radius*2, p_shape[3]], tf.float32)
+    mask = tf.ones([radius*2, radius*2, p_shape[3]], tf.float32)
 
     mask_p = tf.nn.dilation2d(mask_p, mask, [1,1,1,1], [1,1,1,1], 'SAME')
     mask_p = tf.to_float(mask_p)<=tf.constant(1, dtype='float32')
