@@ -7,14 +7,14 @@ def build(hparams):
     g = cl.tf.Graph()
 
     # Define inputs
-    g.image = tf.placeholder(tf.float32, shape=[hparams.batch_size, hparams.features['search_raw']['width'], hparams.features['search_raw']['width']], name='image')
-    g.template = tf.placeholder(tf.float32, shape=[hparams.batch_size, hparams.features['template_raw']['width'], hparams.features['template_raw']['width']], name='template')
+    g.image = tf.placeholder(tf.float32, shape=[hparams.batch_size, hparams.features['search_raw']['width'], hparams.features['search_raw']['width'],3], name='image')
+    g.template = tf.placeholder(tf.float32, shape=[hparams.batch_size, hparams.features['template_raw']['width'], hparams.features['template_raw']['width'],3], name='template')
     g.similar = tf.placeholder(tf.float32, shape=[hparams.batch_size], name='similarity')
     g.crop_coef = tf.placeholder(tf.int32, shape=[], name='crop_coef')
 
     # Add to metrics
-    cl.tf.metrics.image_summary(g.image, 'input/image')
-    cl.tf.metrics.image_summary(g.template, 'input/template')
+    cl.tf.metrics.image_summary(g.image[:,:,:,0], 'input/image')
+    cl.tf.metrics.image_summary(g.template[:,:,:,0], 'input/template')
 
     # Model
     g.xs, g.ys = cl.models.SiameseFusionNet(g.image, g.template, hparams.resize_conv, hparams.kernels_shape)
@@ -37,8 +37,8 @@ def build(hparams):
         ishp = g.xs[i].get_shape()
         tshp = g.ys[i].get_shape()
 
-        swidth = hparams.features['search_raw']['width']/(2**i)
-        twidth = hparams.features['template_raw']['width']/(2**i)
+        swidth = int(hparams.features['search_raw']['width']/(2**i))
+        twidth = int(hparams.features['template_raw']['width']/(2**i))
 
         g.cnn_image_big = g.xs[i][:, crop:swidth-crop, crop:swidth-crop, :]
         g.cnn_templ_big = g.ys[i][:, t_crop:twidth-t_crop, t_crop:twidth-t_crop, :]

@@ -15,15 +15,18 @@ class Data():
                                 random_elastic_transform=hparams.augmentation["random_elastic_transform"])
         self.similar = True
 
-    def get_batch(self):
+    def get_batch(self, switching=True):
 
-        template, image = self.data.get_batch()
+        image, template = self.data.get_batch()
 
-        if not self.check_validity(image, template):
-            return self.get_batch()
+        #image = input['search_raw']
+        #template = input['template_raw']
+        #print(input)
+        #if not self.check_validity(image, template):
+        #    return self.get_batch()
 
         # Similar or Disimilar
-        if not self.similar:
+        if not self.similar and switching:
             search_space, template = self.dissimilar(image, template)
         label = np.ones((self.batch_size),dtype=np.float) if self.similar else -1*np.ones((self.batch_size),dtype=np.float)
 

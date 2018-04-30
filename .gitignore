@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+log/*
 logs/*
 logs_old/*
 dump/*
@@ -12,7 +13,7 @@ data/masks/*
 data/tf/*
 data/slices/*
 data/*
-src/train.py
+#src/train.py
 
 # C extensions
 *.so

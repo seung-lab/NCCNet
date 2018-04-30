@@ -1,7 +1,7 @@
 
 {
     "default": {
-        "name": {"data":"NCCNetv47_random_init", "type": "str", "description": "Name of the experiment"},
+        "name": {"data":"imagenet_layers_eight_v5", "type": "str", "description": "Name of the experiment"},
         "hypothesis": {"data": "random initialization", "type":"str", "description": "What should you figure out running this experiment"},
         "identity_init" :{"data": false, "type": "bool", "description":"Initialize as Identity"},
         "resize": {"data": 4, "type": "int", "description": "Resize images"},
@@ -18,38 +18,39 @@
         "loss_form": {"data": "minus", "type": "str", "description": "Define the loss formulae to minimize over {'minus', 'inverse', 'log'}" },
         "softmax": {"data": false, "type": "bool", "description": "Use Softmax"},
 
-        "train_file": {"data":["data/tf/flyem_10000_384_384.tfrecords"], "type": "str", "description": "Training dataset"},
+        "train_file": {"data":["data/tf/imagenet_50K.tfrecords"], "type": "str", "description": "Training dataset"},
         "test_file": {"data":["data/tf/bad_trainset_24000_612_324.tfrecords"], "type": "str", "description": "Testing dataset"},
 
-        "learning_rate": {"data": 0.0001, "type": "float", "description": "Learning rate"},
+        "learning_rate": {"data": 0.00001, "type": "float", "description": "Learning rate"},
         "momentum": {"data": 0.9, "type": "float", "description": "Learning momentum"},
         "decay": {"data": 0.75, "type": "float", "description": "Learning momentum"},
         "decay_steps": {"data": 1000, "type": "int", "description": "Learning momentum"},
-        "steps": {"data": 80000, "type": "int", "description":  "Number of steps to complete the training"},
-        "batch_size": {"data": 8, "type": "int", "description": "Batch size during training"},
+        "steps": {"data": 200000, "type": "int", "description":  "Number of steps to complete the training"},
+        "batch_size": {"data": 4, "type": "int", "description": "Batch size during training"},
         "epoch_size": {"data": 16, "type": "int", "description": "Epoch size during training"},
         "eval_batch_size": {"data": 2, "type": "int", "description": "Batch size during evaluation"},
         "optimizer": {"data": "Adam", "type": "str", "description": "Optimizer Name (Adam, Adagrad, etc)"},
-        "loglevel": {"data": 20, "type": "int", "description": "Tensorflow log level"},
-        "output_layer": {"data": 1, "type": "int", "description": "output layer of UNET"},
-        "log_iterations": {"data": 10, "type": "int", "description": "Tensorflow log level"},
-        "eval_iterations": {"data": 1000, "type": "int", "description": "Tensorflow log level"},
+        "loglevel": {"data": 50, "type": "int", "description": "Tensorflow log level"},
+        "output_layer": {"data": 8, "type": "int", "description": "output layer of UNET"},
+        "log_iterations": {"data": 100, "type": "int", "description": "Tensorflow log level"},
+        "eval_iterations": {"data": 20000, "type": "int", "description": "Tensorflow log level"},
         "resize_conv": {"data": true, "type":"int","description": "use resize convolutions otherwise deconvolutions"},
 
 
         "kernels_shape": {
-            "data":  [[3,3,1,16],
-                      [3,3,16,32],
+            "data":  [[3,3,3,32],
                       [3,3,32,64],
-                      [3,3,64,128]],
+                      [3,3,64,128],
+                      [3,3,128,256]],
+
             "type": "array of int", "description": "Kernel description"},
 
         "testing_steps": {"data": 100, "type": "int", "description": "testing_steps"},
 
         "features": {
             "data": {
-                "search_raw": {"in_width": 612, "width": 384},
-                "template_raw": {"in_width": 612, "width": 120}
+                "search_raw": {"in_width": 512, "width": 384, "depth":3},
+                "template_raw": {"in_width": 256, "width": 128, "depth":3}
             }, "type": "dict", "description": "Structure of input features"},
 
         "augmentation":{
@@ -61,26 +62,26 @@
     },
 
     "preprocessing": {
-        "tfrecord_train_dest": {"data":"data/tf/pinky_training_mip_5.tfrecords", "type": "str", "description": "Destination of training set"},
+        "tfrecord_train_dest": {"data":"data/tf/imagenet_501K.tfrecords", "type": "str", "description": "Destination of training set"},
 
         "cloud_src": {"data":"gs://neuroglancer/pinky100_v0/image_single_slices/", "type": "str", "description": "Cloud directory"},
         "cloud_mip": {"data": 5, "type": "str", "description": "MIP level for neuroglancer"},
-        "threads": {"data":16, "type": "str", "description": "Number of threads for data collection"},
+        "threads": {"data":1, "type": "str", "description": "Number of threads for data collection"},
         "width": {"data":256, "type": "str", "description": "width of the image"},
         "scale": {"data":1, "type": "str", "description": "scaling factor"},
         "features": {
             "data": {
-                "search_raw": {"in_width": 612, "width": 256},
-                "template_raw": {"in_width": 612, "width": 256}
+              "search_raw": {"in_width": 512, "width": 384, "depth":3},
+              "template_raw": {"in_width": 256, "width": 128, "depth":3}
             }, "type": "dict", "description": "Structure of input features"}
     },
     "evaluation":{
-        "batch_size": {"data": 8, "type": "int", "description": "Batch size during training"},
-        "train_file": {"data":["data/tf/bad_trainset_24000_612_324.tfrecords"], "type": "str", "description": "Testing dataset"},
+        "batch_size": {"data": 1, "type": "int", "description": "Batch size during training"},
+        "train_file": {"data":["data/tf/imagenet_hard_mined.tfrecords"], "type": "str", "description": "Testing dataset"},
         "features": {
             "data": {
-                "search_raw": {"in_width": 612, "width": 512},
-                "template_raw": {"in_width": 324, "width": 120}
+                "search_raw": {"in_width": 512, "width": 384, "depth": 3},
+                "template_raw": {"in_width": 256, "width": 384, "depth": 3}
             }, "type": "dict", "description": "Structure of input features"},
 
         "augmentation":{
