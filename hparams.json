@@ -62,17 +62,17 @@
     },
 
     "preprocessing": {
-        "tfrecord_train_dest": {"data":"data/tf/imagenet_501K.tfrecords", "type": "str", "description": "Destination of training set"},
+        "tfrecord_train_dest": {"data":"data/tf/train.tfrecords", "type": "str", "description": "Destination of training set"},
 
         "cloud_src": {"data":"gs://neuroglancer/pinky100_v0/image_single_slices/", "type": "str", "description": "Cloud directory"},
-        "cloud_mip": {"data": 5, "type": "str", "description": "MIP level for neuroglancer"},
+        "cloud_mip": {"data": 2, "type": "str", "description": "MIP level for neuroglancer"},
         "threads": {"data":1, "type": "str", "description": "Number of threads for data collection"},
         "width": {"data":256, "type": "str", "description": "width of the image"},
         "scale": {"data":1, "type": "str", "description": "scaling factor"},
         "features": {
             "data": {
-              "search_raw": {"in_width": 512, "width": 384, "depth":3},
-              "template_raw": {"in_width": 256, "width": 128, "depth":3}
+              "search_raw": {"in_width": 512, "width": 384, "depth":1},
+              "template_raw": {"in_width": 256, "width": 128, "depth":1}
             }, "type": "dict", "description": "Structure of input features"}
     },
     "evaluation":{
