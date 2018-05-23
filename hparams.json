@@ -80,8 +80,8 @@
         "train_file": {"data":["data/tf/imagenet_hard_mined.tfrecords"], "type": "str", "description": "Testing dataset"},
         "features": {
             "data": {
-                "search_raw": {"in_width": 512, "width": 384, "depth": 3},
-                "template_raw": {"in_width": 256, "width": 384, "depth": 3}
+                "search_raw": {"in_width": 512, "width": 384, "depth": 1},
+                "template_raw": {"in_width": 256, "width": 384, "depth": 1}
             }, "type": "dict", "description": "Structure of input features"},
 
         "augmentation":{
