@@ -1,5 +1,8 @@
 # NCCNet
-Template  matching  by  normalized  cross  correlation (NCC) is widely used for finding image correspondences. We improve the robustness of this algorithm by preprocessing images with "siamese" convolutional networks trained to maximize the contrast between NCC values of true and false matches.
+
+Template matching by normalized cross correlation (NCC) is widely used for finding image correspondences. We improve the robustness of this algorithm by transforming image features with "siamese" convolutional networks trained to maximize the contrast between NCC values of true and false matches. Our main technical contribution is a weakly supervised learning algorithm for training siamese networks. Unlike fully supervised approaches to metric learning, our  method can improve upon vanilla NCC without being given locations of true matches during training. The improvement is quantified using patches of brain images from serial section electron microscopy. Relative to a parameter-tuned bandpass filter, siamese convolutional networks significantly reduce false matches. The improved accuracy of our method could be essential for connectomics, because emerging petascale datasets may require billions of template matches during assembly. Our method is also expected to generalize to other computer vision applications that use template matching to find image correspondences.
+
+The code depends on Cavelab (https://github.com/Loqsh/cavelab).
 
 ## Usage
 Start docker environment
@@ -70,3 +73,15 @@ To run inference please inspect `infer.py` and make sure all arguments are corre
 python infer.py A B
 ```
 where A is the first slice and B is the second. You will need to put correct bounding box dimensions in the `infer.py`
+
+
+## Cite
+
+```
+@article{buniatyan2017deep,
+  title={Deep Learning Improves Template Matching by Normalized Cross Correlation},
+  author={Buniatyan, Davit and Macrina, Thomas and Ih, Dodam and Zung, Jonathan and Seung, H Sebastian},
+  journal={arXiv preprint arXiv:1705.08593},
+  year={2017}
+}
+```
