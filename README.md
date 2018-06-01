@@ -6,16 +6,16 @@ Start docker environment
 ```
 git clone https://github.com/seung-lab/NCCNet
 nvidia-docker run -it --net=host \
-      -v $(pwd)/NCCNet:/NCCNet \
-      davidbun/cavelab:stable-gpu bash
+      -v $(pwd)/NCCNet:/projects/NCCNet \
+      davidbun/cavelab:latest bash
 ```
 
 To generate data using Cloud-volume start docker
 ```
 nvidia-docker run -it --net=host \
-      -v $(pwd)/NCCNet:/NCCNet \
+      -v $(pwd)/NCCNet:/projects/NCCNet \
       -v /usr/people/$USER/.cloudvolume/secrets/:/root/.cloudvolume/secrets/ \
-      davidbun/cavelab:stable-gpu bash
+      davidbun/cavelab:latest bash
 ```
 
 Then CD to the folder and install additional dependencies
@@ -49,9 +49,24 @@ To follow the process of data collection, `dump/{image, ncc, small_template, tem
 To train the model defined in `hparams.json` run the following code. Parameters in the json file are self-explanatory.
 
 ```
+mkdir logs
 python src/train.py
 ```
-Logs and trained models will appear in `logs/` folder. Please change name in `hparams.json` for each experiment to log with different names, otherwise it will throw an error.
+
+Logs and trained models will appear in `logs/` folder. Please change name in `hparams.json` for each experiment to log with different names, otherwise it will throw an error.  `NameError: name 'raw_input' is not defined`
 
 
-## Data
+## Log
+You log the training process by running as a background process and go to `localhost:6006`
+
+```
+tensorboard --logdir=logs
+```
+
+## Inference
+To run inference please inspect `infer.py` and make sure all arguments are correct
+
+```
+python infer.py A B
+```
+where A is the first slice and B is the second. You will need to put correct bounding box dimensions in the `infer.py`

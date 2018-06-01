@@ -7,8 +7,8 @@ def build(hparams):
     g = cl.tf.Graph()
 
     # Define inputs
-    g.image = tf.placeholder(tf.float32, shape=[hparams.batch_size, hparams.features['search_raw']['width'], hparams.features['search_raw']['width'],3], name='image')
-    g.template = tf.placeholder(tf.float32, shape=[hparams.batch_size, hparams.features['template_raw']['width'], hparams.features['template_raw']['width'],3], name='template')
+    g.image = tf.placeholder(tf.float32, shape=[hparams.batch_size, hparams.features['search_raw']['width'], hparams.features['search_raw']['width'],hparams.features['search_raw']['depth']], name='image')
+    g.template = tf.placeholder(tf.float32, shape=[hparams.batch_size, hparams.features['template_raw']['width'], hparams.features['template_raw']['width'],hparams.features['search_raw']['depth']], name='template')
     g.similar = tf.placeholder(tf.float32, shape=[hparams.batch_size], name='similarity')
     g.crop_coef = tf.placeholder(tf.int32, shape=[], name='crop_coef')
 

@@ -25,7 +25,7 @@ def train(hparams):
 
     model = build(hparams)
     sess = cl.tf.global_session().get_sess()
-    cl.tf.global_session().add_log_writers('/projects/NCCNet/log/'+hparams.name+'/',
+    cl.tf.global_session().add_log_writers('/projects/NCCNet2/NCCNet/logs/'+hparams.name+'/',
                                             hparams=hparams,
                                             clean_first=True)
     test_data = []
@@ -38,6 +38,8 @@ def train(hparams):
 
             a = time()
             image, template, label = d.get_batch()
+            #print(image)
+
             image = image*255.0
             template = template*255.0
 

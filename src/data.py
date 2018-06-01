@@ -34,6 +34,8 @@ class Data():
             label = 2*(np.random.rand(self.batch_size)>0)-1 #FIXME add this variable - Probability of misinterpreting the label
         self.similar = not self.similar
 
+        image = np.expand_dims(image, -1)
+        template = np.expand_dims(template, -1)
         return image, template, label
 
     def dissimilar(self, images, templates):

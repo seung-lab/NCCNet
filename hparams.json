@@ -1,7 +1,7 @@
 
 {
     "default": {
-        "name": {"data":"imagenet_layers_eight_v5", "type": "str", "description": "Name of the experiment"},
+        "name": {"data":"training_name_10", "type": "str", "description": "Name of the experiment"},
         "hypothesis": {"data": "random initialization", "type":"str", "description": "What should you figure out running this experiment"},
         "identity_init" :{"data": false, "type": "bool", "description":"Initialize as Identity"},
         "resize": {"data": 4, "type": "int", "description": "Resize images"},
@@ -38,7 +38,7 @@
 
 
         "kernels_shape": {
-            "data":  [[3,3,3,32],
+            "data":  [[3,3,1,32],
                       [3,3,32,64],
                       [3,3,64,128],
                       [3,3,128,256]],
@@ -49,8 +49,8 @@
 
         "features": {
             "data": {
-              "search_raw": {"in_width": 512, "width": 384},
-              "template_raw": {"in_width": 256, "width": 384}
+              "search_raw": {"in_width": 512, "width": 384, "depth": 1},
+              "template_raw": {"in_width": 512, "width": 128, "depth": 1}
             }, "type": "dict", "description": "Structure of input features"},
 
         "augmentation":{
