@@ -73,7 +73,9 @@
             "data": {
               "search_raw": {"in_width": 512, "width": 384, "depth":1},
               "template_raw": {"in_width": 256, "width": 128, "depth":1}
-            }, "type": "dict", "description": "Structure of input features"}
+            }, "type": "dict", "description": "Structure of input features"},
+        "samples":{"data":10000, "description": "Number of training data samples"},
+        "r_delta":{"data": 0.2, "description": "R_delta filter for collecting data"}
     },
     "evaluation":{
         "batch_size": {"data": 1, "type": "int", "description": "Batch size during training"},

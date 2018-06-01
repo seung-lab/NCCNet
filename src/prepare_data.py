@@ -174,13 +174,13 @@ def convert_to(hparams, num_examples):
 
     temp = t[start:end, start:end]
     result, _, ncc = doncc(s, temp)
-    print(result)
-    if(result < 0.2) and (result>0.01) :
+    #print(result)
+    if(result < hparams.r_delta) and (result>0.01) :
         cl.visual.save(s/255, 'dump/image')
-        cl.visual.save(t/255, 'dump/templtate')
+        cl.visual.save(t/255, 'dump/template')
         cl.visual.save(temp/255, 'dump/small_template')
         cl.visual.save(ncc, 'dump/ncc')
-        print('done', index)
+        print('done', index, result)
         #exit()
         search_raw = np.asarray(s, dtype=np.uint8).tostring()
         temp_raw = np.asarray(t, dtype=np.uint8).tostring()
@@ -242,7 +242,7 @@ def main(unused_argv):
 
   # Convert to Examples and write the result to TFRecords.
   #rbg_convert_to(hparams, 100000)
-  convert_to(data, hparams, 10000)
+  convert_to(hparams, hparams.samples)
   #convert_to(data, hparams, 1000, 'test_1K')
 
 
