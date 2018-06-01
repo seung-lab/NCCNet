@@ -18,7 +18,7 @@
         "loss_form": {"data": "minus", "type": "str", "description": "Define the loss formulae to minimize over {'minus', 'inverse', 'log'}" },
         "softmax": {"data": false, "type": "bool", "description": "Use Softmax"},
 
-        "train_file": {"data":["data/tf/imagenet_50K.tfrecords"], "type": "str", "description": "Training dataset"},
+        "train_file": {"data":["data/tf/train.tfrecords"], "type": "str", "description": "Training dataset"},
         "test_file": {"data":["data/tf/bad_trainset_24000_612_324.tfrecords"], "type": "str", "description": "Testing dataset"},
 
         "learning_rate": {"data": 0.00001, "type": "float", "description": "Learning rate"},
@@ -49,8 +49,8 @@
 
         "features": {
             "data": {
-                "search_raw": {"in_width": 512, "width": 384, "depth":3},
-                "template_raw": {"in_width": 256, "width": 128, "depth":3}
+              "search_raw": {"in_width": 512, "width": 384},
+              "template_raw": {"in_width": 256, "width": 384}
             }, "type": "dict", "description": "Structure of input features"},
 
         "augmentation":{
